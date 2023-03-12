@@ -9,6 +9,18 @@ from pydantic import BaseModel
 # TODO: Create database models for Roles data (Ajay)
 
 # TODO: Create database models for Registrations data (Jade)
+class Registration(BaseModel):
+  """
+  Model to represent `Registration` connections between users and organizations
+    
+  This model is based on the `RegistrationEntity` model, which defines the shape
+  of the `Registrations` database in the PostgreSQL database
+  """
+    
+  id: int
+  user_id: int
+  event_id: int
+  status: int
 
 """ Sample models """
 
