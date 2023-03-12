@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
-from user_service import UserService, User
+from role_service import RoleService, Role
 
 app = FastAPI()
 
@@ -11,6 +11,37 @@ app = FastAPI()
 # TODO: Create API routes for Events data (Brianna)
 
 # TODO: Create API routes for Roles data (Ajay)
+@app.get("/api/roles")
+def get_roles(role_service: RoleService = Depends()) -> list[Role]:
+    return role_service.all()
+
+@app.post("/api/roles")
+def new_role(role: Role, role_service: RoleService = Depends()) -> Role:
+    try:
+        return role_service.create(role)
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+@app.get("/api/roles/user/{user_id}", responses={404: {"model": None}})
+def get_role_from_userid(user_id: int, role_service: RoleService = Depends()) -> list[Role]:
+    try: 
+        return role_service.get_from_userid(user_id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+@app.get("/api/roles/org/{org_id}", responses={404: {"model": None}})
+def get_role_from_userid(org_id: int, role_service: RoleService = Depends()) -> list[Role]:
+    try: 
+        return role_service.get_from_orgid(org_id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+@app.delete("/api/roles/{id}")
+def delete_role(id: int, role_service = Depends(RoleService)):
+    try: 
+        return role_service.delete(id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 # TODO: Create API routes for Registrations data (Jade)
 

@@ -4,7 +4,7 @@
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from typing import Self
-from models import User
+from models import Role
 
 
 class Base(DeclarativeBase):
@@ -17,6 +17,20 @@ class Base(DeclarativeBase):
 # TODO: Create an entity for Events data (Brianna)
 
 # TODO: Create an entity for Roles data (Ajay)
+class RoleEntity(Base):
+    __tablename__ = "role"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(Integer)
+    org_id: Mapped[int] = mapped_column(Integer)
+    membership_type: Mapped[int] = mapped_column(Integer)
+
+    @classmethod
+    def from_model(cls, model: Role) -> Self:
+        return cls(id=model.id, user_id=model.user_id, org_id=model.org_id, membership_type=model.membership_type)
+
+    def to_model(self) -> Role:
+        return Role(id=self.id, user_id=self.user_id, org_id=self.org_id, membership_type=self.membership_type)
 
 # TODO: Create an entity for Registrations data (Jade)
 
