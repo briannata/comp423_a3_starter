@@ -9,6 +9,10 @@ Base.metadata.create_all(database.engine)
 from sqlalchemy.orm import Session
 session = Session(database.engine)
 
-# TODO: Add a UserEntity to the database session and commit it.
-user = UserEntity(pid=730489388, first_name="Brianna", last_name="Ta")
-session.commit()
+# TODO: Reset the database.
+
+""" Reset database """
+
+# user = UserEntity(pid=730489388, first_name="Brianna", last_name="Ta")
+# session.add(user)
+# session.commit()
