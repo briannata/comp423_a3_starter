@@ -1,6 +1,5 @@
 from fastapi import Depends
-from sqlalchemy import select, update, values
-from sqlalchemy import insert
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 from database import db_session
 from models import Role
