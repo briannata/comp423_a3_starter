@@ -1,5 +1,5 @@
 import database
-from entities import Base, UserEntity
+from entities import Base, RoleEntity
 
 # Reset Tables
 Base.metadata.drop_all(database.engine)
@@ -10,6 +10,9 @@ from sqlalchemy.orm import Session
 session = Session(database.engine)
 
 # TODO: Reset the database.
+role = RoleEntity(id=1, user_id=1, org_id=1, membership_type = 1)
+session.add(role)
+session.commit()
 
 """ Reset database """
 

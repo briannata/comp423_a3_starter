@@ -1,11 +1,3 @@
-from fastapi import Depends
-from sqlalchemy import select
-from sqlalchemy import insert
-from sqlalchemy.orm import Session
-from database import db_session
-from models import User
-from entities import UserEntity
-
 
 # TODO: Create separate service file called `user_service` for User data (Audrey)
 
@@ -13,7 +5,7 @@ from entities import UserEntity
 
 # TODO: Create separate service file called `events_service` for Events data (Brianna)
 
-# TODO: Create separate service file called `roles_service` for Roles data (Ajay)
+# TODO: Create separate service file called `role_service` for Roles data (Ajay)
 
 # TODO: Create separate service file called `registrations_service` for Registrations data (Jade)
 
