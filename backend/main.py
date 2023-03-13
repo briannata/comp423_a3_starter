@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Depends, HTTPException
-from backend.models import Registration
 from registrations_service import RegistrationsService, Registration
 
 app = FastAPI()
