@@ -28,10 +28,12 @@ def create_registration(registration: Registration, registrations_service: Regis
     raise HTTPException(status_code=422, detail=str(e))
 
 @app.get("/api/registrations/{user_id}/{status}")
-def get_registrations_by_user():
-  """Get a user's registered or attended events."""
-  # TODO
-  return
+def get_registrations_by_user(user_id: int, status: int, registrations_service: RegistrationsService = Depends()) -> Registration:
+  """Get a user's registered and/or attended events."""
+  try:
+    return registrations_service.get_by_user(user_id, status)
+  except Exception as e:
+    raise HTTPException(status_code=422, detail=str(e))
 
 @app.get("/api/registrations/{event_id}/{status}")
 def get_registrations_by_event():

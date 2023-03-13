@@ -24,7 +24,8 @@ class RegistrationsService:
       # Attempt to get RegistrationEntity based on the IDs of the given user and event.
       registration = self._session.query(RegistrationEntity).filter(
         RegistrationEntity.user_id == registration.user_id, 
-        RegistrationEntity.event_id == registration.event_id)
+        RegistrationEntity.event_id == registration.event_id).one()
+      # potentially put this in try catch in case one raises exception! (duplicate regs)
 
       # Check if the registration already exists in the table.
       if registration:
@@ -36,17 +37,17 @@ class RegistrationsService:
         self._session.add(registration_entity)
         self._session.commit()
         return registration_entity.to_model()
+      
+    def get_by_user(self, user_id: int, status: int) -> list[Registration]:
+       user = self._session.get(UserEntity, user_id)
+       
+       if user:
+          entities = self._session.query(RegistrationEntity).filter(
+             RegistrationEntity.user_id == user_id)
+          return [entity.to_model() for entity in entities]
+       else:
+          raise ValueError(f"The user with the ID {user_id} does not exist.")
         
-
-    # def create(self, registration: Registration) -> Registration:
-    #     if self._session.get(RegistrationEntity, registration.id):
-    #         raise ValueError(f"Duplicate user found with PID: {user.pid}")
-    #     else:
-    #         user_entity = UserEntity.from_model(user)
-    #         self._session.add(user_entity)
-    #         self._session.commit()
-    #         return user_entity.to_model()
-
     # def get(self, pid: int) -> User | None:
     #     user = self._session.get(UserEntity, pid)
     #     if user:
