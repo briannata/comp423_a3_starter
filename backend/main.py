@@ -13,6 +13,48 @@ app = FastAPI()
 # TODO: Create API routes for Roles data (Ajay)
 
 # TODO: Create API routes for Registrations data (Jade)
+@app.get("/api/registrations")
+def get_registrations():
+  """Get all registrations for all events."""
+  # TODO
+  return
+
+@app.post("/api/registrations")
+def create_registration():
+  """Create a registration by a user for an event."""
+  # TODO
+  return
+
+@app.get("/api/registrations/{user_id}/{status}")
+def get_registrations_by_user():
+  """Get a user's registered or attended events."""
+  # TODO
+  return
+
+@app.get("/api/registrations/{event_id}/{status}")
+def get_registrations_by_event():
+  """Get an event's registered or attended users."""
+  # TODO
+  return
+
+@app.delete("/api/registrations/{user_id}/{event_id}")
+def delete_registration():
+  """Delete registration for an event based on the user and the event."""
+  # TODO
+  return
+
+@app.delete("/api/registrations/{user_id}")
+def delete_user_registrations():
+  """Delete all registrations for a user."""
+  # TODO
+  return
+
+@app.delete("/api/registrations/{event_id}")
+def delete_event_registrations():
+  """Delete all registrations for an event."""
+  # TODO
+  return
+
 
 """ These are sample routes """
 
