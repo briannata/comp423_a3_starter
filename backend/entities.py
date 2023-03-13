@@ -29,17 +29,17 @@ class OrganizationEntity(Base):
     # Long description of the organization
     long_description: Mapped[str] = mapped_column(String)
     # Website of the organization
-    website = Mapped[str] = mapped_column(String)
+    website: Mapped[str] = mapped_column(String)
     # Contact email for the organization
-    email = Mapped[str] = mapped_column(String)
+    email: Mapped[str] = mapped_column(String)
     # Instagram username for the organization
-    instagram = Mapped[str] = mapped_column(String)
+    instagram: Mapped[str] = mapped_column(String)
     # LinkedIn for the organization
-    linked_in = Mapped[str] = mapped_column(String)
+    linked_in: Mapped[str] = mapped_column(String)
     # YouTube for the organization
-    youtube = Mapped[str] = mapped_column(String)
+    youtube: Mapped[str] = mapped_column(String)
     # Heel Life for the organization
-    heel_life = Mapped[str] = mapped_column(String)
+    heel_life: Mapped[str] = mapped_column(String)
 
     @classmethod
     def from_model(cls, model: Organization) -> Self:

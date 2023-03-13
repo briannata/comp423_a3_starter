@@ -75,7 +75,7 @@ def update_organization(organization: Organization, organization_service: Organi
         raise HTTPException(status_code=404, detail=str(e))
 
 @app.delete("/api/organizations/{id}")
-def delete_role(id: int, organization_service = Depends(OrganizationService)):
+def delete_organization(id: int, organization_service = Depends(OrganizationService)):
     """
     Delete organization based on id
     """
