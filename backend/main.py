@@ -56,7 +56,7 @@ def get_organization_from_id(id: int, organization_service: OrganizationService 
         # - This would occur if there is no response
         raise HTTPException(status_code=404, detail=str(e))
 
-@app.put("/api/organizations/{id}", responses={404: {"model": None}})
+@app.put("/api/organizations/", responses={404: {"model": None}})
 def update_organization(organization: Organization, organization_service: OrganizationService = Depends()) -> list[Organization]:
     """
     Update organization
