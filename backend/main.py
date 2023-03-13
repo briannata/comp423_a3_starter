@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException
 from role_service import RoleService, Role
+from organization_service import OrganizationService, Organization
 
 app = FastAPI()
 
@@ -7,6 +8,86 @@ app = FastAPI()
 # TODO: Create API routes for User data (Audrey)
 
 # TODO: Create API routes for Organization data (Brianna)
+@app.get("/api/organizations")
+def get_organizations(organization_service: OrganizationService = Depends()) -> list[Organization]:
+    """
+    Get all organizations
+
+    Returns:
+        list[Organization]: All `Organizations`s in the `Organization` database table
+    """
+
+    # Return all roles
+    return organization_service.all()
+
+@app.post("/api/organizations")
+def new_organization(organization: Organization, organization_service: OrganizationService = Depends()) -> Organization:
+    """
+    Create or update organization
+
+    Returns:
+        Organization: Latest iteration of the created or updated organization after changes made
+    """
+
+    # Try to create / update role
+    try:
+        # Return created / updated role
+        return organization_service.create(organization)
+    except Exception as e:
+        # Raise 422 exception if creation fails
+        # - This would occur if the request body is shaped incorrectly
+        raise HTTPException(status_code=422, detail=str(e))
+
+@app.get("/api/organizations/{id}", responses={404: {"model": None}})
+def get_organization_from_id(id: int, organization_service: OrganizationService = Depends()) -> list[Organization]:
+    """
+    Get organization with matching id
+
+    Returns:
+        Organization: Organization with matching id
+    """
+    
+    # Try to get organization with matching id
+    try: 
+        # Return organization
+        return organization_service.get_from_id(id)
+    except Exception as e:
+        # Raise 404 exception if search fails
+        # - This would occur if there is no response
+        raise HTTPException(status_code=404, detail=str(e))
+
+@app.put("/api/organizations/{id}", responses={404: {"model": None}})
+def update_organization(organization: Organization, organization_service: OrganizationService = Depends()) -> list[Organization]:
+    """
+    Update organization
+
+    Returns:
+        Organization: Updated organization
+    """
+
+    # Try to update organization
+    try: 
+        # Return updated organization
+        return organization_service.update(organization)
+    except Exception as e:
+        # Raise 404 exception if search fails
+        # - This would occur if there is no response
+        raise HTTPException(status_code=404, detail=str(e))
+
+@app.delete("/api/organizations/{id}")
+def delete_role(id: int, organization_service = Depends(OrganizationService)):
+    """
+    Delete organization based on id
+    """
+
+    # Try to delete organization
+    try:
+        # Return deleted organization
+        return organization_service.delete(id)
+    except Exception as e:
+        # Raise 404 exception if search fails
+        # - This would occur if there is no response or if item to delete does not exist
+        raise HTTPException(status_code=404, detail=str(e))
 
 # TODO: Create API routes for Events data (Brianna)
 

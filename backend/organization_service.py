@@ -79,7 +79,7 @@ class OrganizationService:
             # Return added object
             return organization_entity.to_model()
 
-    def get_from_id(self, id: int) -> list[Organization]:
+    def get_from_id(self, id: int) -> Organization:
         """
         Get the organization from an id
         If none retrieved, a debug description is displayed.
@@ -91,7 +91,7 @@ class OrganizationService:
         """
 
         # Query the organization with matching id
-        organization = self._session.query(OrganizationEntity).filter(OrganizationEntity.id == id).all()
+        organization = self._session.query(OrganizationEntity).get(id)
 
         # Check if result is null
         if organization:
@@ -101,6 +101,40 @@ class OrganizationService:
             # Raise exception
             raise Exception(f"No organization found with ID: {id}")
 
+    def update(self, organization: Organization) -> Organization:
+        """
+        Update the organization
+        If none found with that id, a debug description is displayed.
+
+        Parameters:
+            organization (Organization): Organization to add to table
+        Returns:
+            Organization: Updated organization object
+        """
+
+        # Query the organization with matching id
+        obj = self._session.query(OrganizationEntity).get(organization.id)
+
+        # Check if result is null
+        if obj:
+            # Update organization object
+            obj.name=organization.name
+            obj.logo=organization.logo
+            obj.short_description=organization.short_description
+            obj.long_description=organization.long_description
+            obj.website=organization.website
+            obj.email=organization.email
+            obj.instagram=organization.instagram
+            obj.linked_in=organization.linked_in
+            obj.youtube=organization.youtube
+            obj.heel_life=organization.heel_life
+            # Return updated object
+            return obj.to_model()
+        else:
+            # Raise exception
+            raise Exception(f"No organization found with ID: {organization.id}")
+
+    
     def delete(self, id: int) -> None:
         """
         Delete the organization based on the provided ID.
@@ -111,7 +145,7 @@ class OrganizationService:
         """
 
         # Find object to delete
-        obj=self._session.query(OrganizationEntity).filter(OrganizationEntity.id == id).first()
+        obj=self._session.query(OrganizationEntity).get(id)
 
         # Ensure object exists
         if obj:
