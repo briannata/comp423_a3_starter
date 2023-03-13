@@ -17,7 +17,6 @@ class Registration(BaseModel):
   of the `Registrations` database in the PostgreSQL database
   """
     
-  id: int
   user_id: int
   event_id: int
   status: int

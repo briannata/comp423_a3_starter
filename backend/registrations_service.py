@@ -20,19 +20,22 @@ class RegistrationsService:
         entities = self._session.scalars(query).all()
         return [entity.to_model() for entity in entities]
 
-    def create(self, user: User, event: Event) -> Registration:
+    def create(self, registration: Registration) -> Registration:
       # Attempt to get RegistrationEntity based on the IDs of the given user and event.
       registration = self._session.query(RegistrationEntity).filter(
-        RegistrationEntity.user_id == user.id, 
-        RegistrationEntity.event_id == event.id)
+        RegistrationEntity.user_id == registration.user_id, 
+        RegistrationEntity.event_id == registration.event_id)
 
       # Check if the registration already exists in the table.
       if registration:
         # If the registration exists, raise a value error with a description.
-        raise ValueError(f"{user.first_name} {user.last_name} is already registered for the event '{event.name}'.")
+        raise ValueError(f"{registration.user_id.first_name} {registration.user_id.last_name} is already registered for the event '{registration.event_id.name}'.")
       else:
         # If the registration does not exist, create a new registration.
-        registration_entity = RegistrationEntity.from_model()
+        registration_entity = RegistrationEntity.from_model(registration)
+        self._session.add(registration_entity)
+        self._session.commit()
+        return registration_entity.to_model()
         
 
     # def create(self, registration: Registration) -> Registration:

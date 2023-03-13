@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException
-from user_service import UserService, User
+from backend.models import Registration
+from registrations_service import RegistrationsService, Registration
 
 app = FastAPI()
 
@@ -20,10 +21,12 @@ def get_registrations():
   return
 
 @app.post("/api/registrations")
-def create_registration():
+def create_registration(registration: Registration, registrations_service: RegistrationsService = Depends()) -> Registration:
   """Create a registration by a user for an event."""
-  # TODO
-  return
+  try:
+    return registrations_service.create(registration)
+  except Exception as e:
+    raise HTTPException(status_code=422, detail=str(e))
 
 @app.get("/api/registrations/{user_id}/{status}")
 def get_registrations_by_user():
