@@ -28,7 +28,7 @@ def create_registration(registration: Registration, registrations_service: Regis
     raise HTTPException(status_code=422, detail=str(e))
 
 @app.get("/api/registrations/{user_id}/{status}")
-def get_registrations_by_user(user_id: int, status: int, registrations_service: RegistrationsService = Depends()) -> Registration:
+def get_registrations_by_user(user_id: int, status: int, registrations_service: RegistrationsService = Depends()) -> list[Registration]:
   """Get a user's registered and/or attended events."""
   try:
     return registrations_service.get_by_user(user_id, status)
@@ -36,28 +36,28 @@ def get_registrations_by_user(user_id: int, status: int, registrations_service: 
     raise HTTPException(status_code=422, detail=str(e))
 
 @app.get("/api/registrations/{event_id}/{status}")
-def get_registrations_by_event():
+def get_registrations_by_event(event_id: int, status: int, registrations_service: RegistrationsService = Depends()) -> list[Registration]:
   """Get an event's registered or attended users."""
-  # TODO
-  return
+  try:
+    return registrations_service.get_by_event(event_id, status)
+  except Exception as e:
+    raise HTTPException(status_code=422, detail=str(e))
 
 @app.delete("/api/registrations/{user_id}/{event_id}")
-def delete_registration():
+def delete_registration(user_id: int, event_id: int, registrations_service: RegistrationsService = Depends()) -> None:
   """Delete registration for an event based on the user and the event."""
-  # TODO
-  return
-
-@app.delete("/api/registrations/{user_id}")
-def delete_user_registrations():
-  """Delete all registrations for a user."""
-  # TODO
-  return
+  try:
+    registrations_service.delete_registration(user_id, event_id)
+  except Exception as e:
+    raise HTTPException(status_code=404, detail=str(e))
 
 @app.delete("/api/registrations/{event_id}")
-def delete_event_registrations():
-  """Delete all registrations for an event."""
-  # TODO
-  return
+def clear_event_registrations(event_id: int, registrations_service: RegistrationsService = Depends()) -> None:
+  """Clear all registrations for an event."""
+  try:
+    registrations_service.clear_registrations(event_id)
+  except Exception as e:
+    raise HTTPException(status_code=404, detail=str(e))
 
 
 """ These are sample routes """
