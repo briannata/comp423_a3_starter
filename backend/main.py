@@ -14,14 +14,33 @@ app = FastAPI()
 
 # TODO: Create API routes for Registrations data (Jade)
 @app.get("/api/registrations")
-def get_registrations():
-  """Get all registrations for all events."""
-  # TODO
-  return
+def get_registrations(registrations_service: RegistrationsService = Depends()) -> list[Registration]:
+  """
+  Get all registrations for all events.
+
+  Args:
+    registration_service is a valid RegistrationService.
+
+  Returns:
+    list[Role]: All `Registration`s in the `Registrations` database table
+  """
+  return registrations_service.all()
 
 @app.post("/api/registrations")
 def create_registration(registration: Registration, registrations_service: RegistrationsService = Depends()) -> Registration:
-  """Create a registration by a user for an event."""
+  """
+  Create a registration by a user for an event.
+
+  Args:
+    registration is a valid Registration model.
+    registration_service is a valid RegistrationService.
+
+  Returns:
+    The Registration object for the user.
+
+  Raises:
+    HTTPException 422 if create() raises an Exception.
+  """
   try:
     return registrations_service.create(registration)
   except Exception as e:
@@ -29,7 +48,20 @@ def create_registration(registration: Registration, registrations_service: Regis
 
 @app.get("/api/registrations/{user_id}/{status}")
 def get_registrations_by_user(user_id: int, status: int, registrations_service: RegistrationsService = Depends()) -> list[Registration]:
-  """Get a user's registered and/or attended events."""
+  """
+  Get all Registration objects associated with a User based on attendance status.
+
+  Args:
+    user_id is an Integer representing a unique identifier for a user.
+    status is an Integer representing if the user has registered for (0) or attended (1) an event.
+    registration_service is a valid RegistrationService.
+
+  Returns:
+    list of Events the user has registered for or attended.
+
+  Raises:
+    HTTPException 422 if get_by_user() raises an Exception.
+  """
   try:
     return registrations_service.get_by_user(user_id, status)
   except Exception as e:
@@ -37,15 +69,62 @@ def get_registrations_by_user(user_id: int, status: int, registrations_service: 
 
 @app.get("/api/registrations/{event_id}/{status}")
 def get_registrations_by_event(event_id: int, status: int, registrations_service: RegistrationsService = Depends()) -> list[Registration]:
-  """Get an event's registered or attended users."""
+  """
+  Get all registrations associated with an Event based on attendance status.
+
+  Args:
+    event_id is an Integer representing a unique identifier for an event.
+    status is an Integer representing if the user has registered for (0) or attended (1) an event.
+    registration_service is a valid RegistrationService.
+
+  Returns:
+    list of Users who are registered for or attended the event.
+
+  Raises:
+    HTTPException 422 if get_by_event() raises an Exception.
+  """
   try:
     return registrations_service.get_by_event(event_id, status)
   except Exception as e:
     raise HTTPException(status_code=422, detail=str(e))
 
+@app.put("/api/registrations/{user_id}/{event_id}")
+def mark_attended(user_id: int, event_id: int, registrations_service: RegistrationsService = Depends()) -> Registration:
+  """
+  Update a User's attendance status for an Event.
+
+  Args:
+    user_id is an Integer representing a unique identifier for a user.
+    event_id is an Integer representing a unique identifier for an event.
+    registration_service is a valid RegistrationService.
+
+  Returns:
+    The updated Registration object
+
+  Raises:
+    HTTPException 422 if update_status() raises an Exception.
+  """
+  try:
+    return registrations_service.update_status(user_id, event_id)
+  except Exception as e:
+    raise HTTPException(status_code=422, detail=str(e))
+
 @app.delete("/api/registrations/{user_id}/{event_id}")
 def delete_registration(user_id: int, event_id: int, registrations_service: RegistrationsService = Depends()) -> None:
-  """Delete registration for an event based on the user and the event."""
+  """
+  Delete Registration for Event based on the User and the Event.
+
+  Args:
+    user_id is an Integer representing a unique identifier for a user.
+    event_id is an Integer representing a unique identifier for an event.
+    registration_service is a valid RegistrationService.
+
+  Returns:
+    None
+
+  Raises:
+    HTTPException 404 if delete_registration() raises an Exception.
+  """
   try:
     registrations_service.delete_registration(user_id, event_id)
   except Exception as e:
@@ -53,7 +132,20 @@ def delete_registration(user_id: int, event_id: int, registrations_service: Regi
 
 @app.delete("/api/registrations/{event_id}")
 def clear_event_registrations(event_id: int, registrations_service: RegistrationsService = Depends()) -> None:
-  """Clear all registrations for an event."""
+  """
+  Clear all registrations for an event.
+
+  Args:
+    event_id is an Integer representing a unique identifier for an event.
+    registration_service is a valid RegistrationService.
+
+  Returns:
+    None
+
+  Raises:
+    HTTPException 404 if clear_registrations() raises an Exception.
+  """
+
   try:
     registrations_service.clear_registrations(event_id)
   except Exception as e:

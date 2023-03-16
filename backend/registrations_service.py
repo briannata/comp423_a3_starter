@@ -57,14 +57,20 @@ class RegistrationsService:
         return [entity.to_model() for entity in entities]
       else:
         raise ValueError(f"An event with the ID {event_id} does not exist.")
+      
+    def update_status(self, user_id: int, event_id: int) -> None:
+      registration = self._session.query(RegistrationEntity).filter(
+        RegistrationEntity.user_id == registration.user_id, 
+        RegistrationEntity.event_id == registration.event_id).one()
        
     def delete_registration(self, user_id: int, event_id: int):
       registration = self._session.query(RegistrationEntity).filter(
-      RegistrationEntity.user_id == registration.user_id, 
-      RegistrationEntity.event_id == registration.event_id).one()
+        RegistrationEntity.user_id == registration.user_id, 
+        RegistrationEntity.event_id == registration.event_id).one()
        
       if registration:
-        self._session.delete(registration)
+        registration.status = 1
+        self._session.commit()
       else:
         raise ValueError(f"The user with the ID {user_id} is not registered for the event with the ID {event_id}.")
       
