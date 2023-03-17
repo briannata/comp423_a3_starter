@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from sqlalchemy import Date
+from datetime import datetime
 
 # TODO: Create database models for User data (Audrey)
 class User(BaseModel):
@@ -15,7 +15,7 @@ class User(BaseModel):
     last_name: str
     email: str
     user_type: int
-    graduation_date: Date
+    graduation_date: datetime
     major1: str
     major2: str
     minor1: str

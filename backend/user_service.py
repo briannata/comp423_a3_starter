@@ -78,7 +78,7 @@ class UserService:
             # Return added object
             return user_entity.to_model()
 
-    def get_from_userpid(self, pid: int) -> list[User]:
+    def get(self, pid: int) -> User:
         """
         Get user matching the provided user pid.
         If none retrieved, a debug description is displayed.
@@ -86,18 +86,18 @@ class UserService:
         Parameters:
             pid (int): Unique user PID
         Returns:
-            list[User]: All matching `User` objects
+            User: Matching `User` object
         """
 
-        # Query roles with matching user id
-        users = self._session.query(UserEntity).filter(UserEntity.pid == pid).all()
+        # Get user with matching user id
+        user = self._session.get(UserEntity, pid)
 
         # Check if result is null
-        if users:
-            # Convert entries to a model and return
-            return [user.to_model() for user in users]
+        if user:
+            # Convert entry to a model and return
+            return user.to_model()
         else:
-            # Raise exception
+            #Raise exception
             raise Exception(f"No user found with PID: {pid}")
 
     def delete(self, pid: int) -> None:

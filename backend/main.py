@@ -49,14 +49,14 @@ def get_user(pid: int, user_service: UserService = Depends()) -> User:
     # Try to get user with matching pid
     try: 
         # Return user
-        return user_service.get_from_userpid(pid)
+        return user_service.get(pid)
     except Exception as e:
         # Raise 404 exception if search fails
         # - This would occur if there is no response
         raise HTTPException(status_code=404, detail=str(e))
 
 @app.delete("/api/users/{pid}")
-def delete_role(pid: int, user_service = Depends(UserService)):
+def delete_user(pid: int, user_service = Depends(UserService)):
     """
     Delete user based on pid
     """

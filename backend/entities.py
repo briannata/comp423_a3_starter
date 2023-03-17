@@ -1,7 +1,7 @@
 """Definitions of SQLAlchemy table-backed object mappings called entities."""
 
 
-from sqlalchemy import Date, Integer, String
+from sqlalchemy import DateTime, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from typing import Self
 from models import User, Role
@@ -12,7 +12,7 @@ class Base(DeclarativeBase):
 
 # TODO: Create an entity for User data (Audrey)
 class UserEntity(Base):
-    """Serves as the database model schema defining the shape of the `Role` table"""
+    """Serves as the database model schema defining the shape of the `User` table"""
 
     __tablename__ = "users"
 
@@ -25,9 +25,9 @@ class UserEntity(Base):
     # User's email
     email: Mapped[str] = mapped_column(String(64))
     # Type of membership (0 = user, 1 = manager)
-    user_type: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_type: Mapped[int] = mapped_column(Integer)
     # User's graduation month and year
-    graduation_date: Mapped[Date] = mapped_column(Date)
+    graduation_date: Mapped[DateTime] = mapped_column(DateTime)
     # User's first major
     major1: Mapped[str] = mapped_column(String(64))
     # User's second major
