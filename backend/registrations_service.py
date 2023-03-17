@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy import insert
 from sqlalchemy.orm import Session
 from database import db_session
-from models import Registration, User, Event
+from models import Registration
 from entities import RegistrationEntity
 
 """ This is a sample service """
@@ -76,14 +76,17 @@ class RegistrationsService:
       Raises:
         ValueError if user with specified ID does not exist.
       """
-      user = self._session.get(UserEntity, user_id)
+      # user = self._session.get(UserEntity, user_id)
       
-      if user:
-        entities = self._session.query(RegistrationEntity).filter(
-            RegistrationEntity.user_id == user_id, RegistrationEntity.status == status).all()
-        return [entity.to_model() for entity in entities]
-      else:
-        raise ValueError(f"The user with the ID {user_id} does not exist.")
+      # if user:
+      #   entities = self._session.query(RegistrationEntity).filter(
+      #       RegistrationEntity.user_id == user_id, RegistrationEntity.status == status).all()
+      #   return [entity.to_model() for entity in entities]
+      # else:
+      #   raise ValueError(f"The user with the ID {user_id} does not exist.")
+      entities = self._session.query(RegistrationEntity).filter(
+          RegistrationEntity.user_id == user_id, RegistrationEntity.status == status).all()
+      return [entity.to_model() for entity in entities]
         
     def get_by_event(self, event_id: int, status: int) -> list[Registration]:
       """
@@ -99,14 +102,17 @@ class RegistrationsService:
       Raises:
         ValueError if event with specified ID does not exist.
       """
-      event = self._session.get(EventEntity, event_id)
+      # event = self._session.get(EventEntity, event_id)
       
-      if event:
-        entities = self._session.query(RegistrationEntity).filter(
-            RegistrationEntity.event_id == event_id, RegistrationEntity.status == status)
-        return [entity.to_model() for entity in entities]
-      else:
-        raise ValueError(f"An event with the ID {event_id} does not exist.")
+      # if event:
+      #   entities = self._session.query(RegistrationEntity).filter(
+      #       RegistrationEntity.event_id == event_id, RegistrationEntity.status == status)
+      #   return [entity.to_model() for entity in entities]
+      # else:
+      #   raise ValueError(f"An event with the ID {event_id} does not exist.")
+      entities = self._session.query(RegistrationEntity).filter(
+        RegistrationEntity.event_id == event_id, RegistrationEntity.status == status)
+      return [entity.to_model() for entity in entities]
       
     def update_status(self, user_id: int, event_id: int) -> Registration:
       """

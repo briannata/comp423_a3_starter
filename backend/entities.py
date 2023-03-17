@@ -4,7 +4,6 @@
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from typing import Self
-from models import User
 from models import Registration
 
 
@@ -47,7 +46,7 @@ class RegistrationEntity(Base):
         """
         return cls(user_id=model.user_id, event_id=model.event_id, status=model.status)
 
-    def to_model(self) -> User:
+    def to_model(self) -> Registration:
         """
         Class method that converts a `RegistrationEntity` into a `Registration` object
         
