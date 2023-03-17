@@ -3,6 +3,25 @@ from pydantic import BaseModel
 # TODO: Create database models for User data (Audrey)
 
 # TODO: Create database models for Organization data (Brianna)
+class Organization(BaseModel):
+    """
+    Model to represent an `Organization` object
+    
+    This model is based on the `OrganizationEntity` model, which defines the shape
+    of the `Organization` database in the PostgreSQL database
+    """
+    
+    id: int
+    name: str
+    logo: str
+    short_description: str
+    long_description: str
+    website: str
+    email: str
+    instagram: str
+    linked_in: str
+    youtube: str
+    heel_life: str
 
 # TODO: Create database models for Events data (Brianna)
 
