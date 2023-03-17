@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException
 from role_service import RoleService, Role
 from organization_service import OrganizationService, Organization
+from event_service import EventService, Event
+from datetime import datetime
 
 app = FastAPI()
 
@@ -17,7 +19,7 @@ def get_organizations(organization_service: OrganizationService = Depends()) -> 
         list[Organization]: All `Organizations`s in the `Organization` database table
     """
 
-    # Return all roles
+    # Return all organizations
     return organization_service.all()
 
 @app.post("/api/organizations")
@@ -29,9 +31,9 @@ def new_organization(organization: Organization, organization_service: Organizat
         Organization: Latest iteration of the created or updated organization after changes made
     """
 
-    # Try to create / update role
+    # Try to create / update organization
     try:
-        # Return created / updated role
+        # Return created / updated organization
         return organization_service.create(organization)
     except Exception as e:
         # Raise 422 exception if creation fails
@@ -90,6 +92,110 @@ def delete_organization(id: int, organization_service = Depends(OrganizationServ
         raise HTTPException(status_code=404, detail=str(e))
 
 # TODO: Create API routes for Events data (Brianna)
+@app.get("/api/events")
+def get_events(event_service: EventService = Depends()) -> list[Event]:
+    """
+    Get all events
+
+    Returns:
+        list[Event]: All `Event`s in the `Event` database table
+    """
+
+    # Return all events
+    return event_service.all()
+
+@app.get("/api/events/org/{id}")
+def get_events_org_id(org_id: int, event_service: EventService = Depends()) -> list[Event]:
+    """
+    Get all events from an organization
+
+    Returns:
+        list[Event]: All `Event`s in the `Event` database table from a specific organization
+    """
+
+    # Return all events
+    return event_service.get_from_org_id(org_id)
+
+@app.get("/api/events/time/")
+def get_events_from_time_range(start: datetime, end: datetime, event_service: EventService = Depends()) -> list[Event]:
+    """
+    Get all events from a time range
+
+    Returns:
+        list[Event]: All `Event`s in the `Event` database table in a specific time range
+    """
+
+    # Return all events
+    return event_service.get_from_time_range(start, end)
+
+@app.post("/api/events")
+def new_event(event: Event, event_service: EventService = Depends()) -> Event:
+    """
+    Create or update event
+
+    Returns:
+        Event: Latest iteration of the created or updated event after changes made
+    """
+
+    # Try to create / update event
+    try:
+        # Return created / updated event
+        return event_service.create(event)
+    except Exception as e:
+        # Raise 422 exception if creation fails
+        # - This would occur if the request body is shaped incorrectly
+        raise HTTPException(status_code=422, detail=str(e))
+
+@app.get("/api/events/{id}", responses={404: {"model": None}})
+def get_event_from_id(id: int, event_service: EventService = Depends()) -> Event:
+    """
+    Get event with matching id
+
+    Returns:
+        Event: Event with matching id
+    """
+    
+    # Try to get event with matching id
+    try: 
+        # Return event
+        return event_service.get_from_id(id)
+    except Exception as e:
+        # Raise 404 exception if search fails
+        # - This would occur if there is no response
+        raise HTTPException(status_code=404, detail=str(e))
+
+@app.put("/api/events/", responses={404: {"model": None}})
+def update_event(organization: Event, event_service: EventService = Depends()) -> Event:
+    """
+    Update event
+
+    Returns:
+        Event: Updated event
+    """
+
+    # Try to update event
+    try: 
+        # Return updated event
+        return event_service.update(organization)
+    except Exception as e:
+        # Raise 404 exception if search fails
+        # - This would occur if there is no response
+        raise HTTPException(status_code=404, detail=str(e))
+
+@app.delete("/api/events/{id}")
+def delete_event(id: int, event_service = Depends(EventService)):
+    """
+    Delete event based on id
+    """
+
+    # Try to delete event
+    try:
+        # Return deleted event
+        return event_service.delete(id)
+    except Exception as e:
+        # Raise 404 exception if search fails
+        # - This would occur if there is no response or if item to delete does not exist
+        raise HTTPException(status_code=404, detail=str(e))
 
 # TODO: Create API routes for Roles data (Ajay)
 
