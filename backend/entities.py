@@ -27,9 +27,11 @@ class RegistrationEntity(Base):
     # Unique ID for a registration
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # User ID associated with registration
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"))
+    # user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"))
+    user_id: Mapped[int] = mapped_column(Integer)
     # Event ID associated with registration
-    event_id: Mapped[int] = mapped_column(Integer, ForeignKey("event.id"))
+    # event_id: Mapped[int] = mapped_column(Integer, ForeignKey("event.id"))
+    event_id: Mapped[int] = mapped_column(Integer)
     # Status of Registration (0 = Registered, 1 = Registered + Attended)
     status: Mapped[int] = mapped_column(Integer)
 

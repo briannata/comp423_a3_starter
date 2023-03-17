@@ -89,13 +89,12 @@ def get_registrations_by_event(event_id: int, status: int, registrations_service
     raise HTTPException(status_code=422, detail=str(e))
 
 @app.put("/api/registrations/{user_id}/{event_id}")
-def mark_attended(user_id: int, event_id: int, registrations_service: RegistrationsService = Depends()) -> Registration:
+def mark_attended(registration: Registration, registrations_service: RegistrationsService = Depends()) -> Registration:
   """
   Update a User's attendance status for an Event.
 
   Args:
-    user_id is an Integer representing a unique identifier for a user.
-    event_id is an Integer representing a unique identifier for an event.
+    registration is a valid Registration model.
     registration_service is a valid RegistrationService.
 
   Returns:
@@ -105,18 +104,17 @@ def mark_attended(user_id: int, event_id: int, registrations_service: Registrati
     HTTPException 422 if update_status() raises an Exception.
   """
   try:
-    return registrations_service.update_status(user_id, event_id)
+    return registrations_service.update_status(registration)
   except Exception as e:
     raise HTTPException(status_code=422, detail=str(e))
 
 @app.delete("/api/registrations/{user_id}/{event_id}")
-def delete_registration(user_id: int, event_id: int, registrations_service: RegistrationsService = Depends()) -> None:
+def delete_registration(registration: Registration, registrations_service: RegistrationsService = Depends()) -> None:
   """
   Delete Registration for Event based on the User and the Event.
 
   Args:
-    user_id is an Integer representing a unique identifier for a user.
-    event_id is an Integer representing a unique identifier for an event.
+    registration is a valid Registration model.
     registration_service is a valid RegistrationService.
 
   Returns:
@@ -126,7 +124,7 @@ def delete_registration(user_id: int, event_id: int, registrations_service: Regi
     HTTPException 404 if delete_registration() raises an Exception.
   """
   try:
-    registrations_service.delete_registration(user_id, event_id)
+    registrations_service.delete_registration(registration)
   except Exception as e:
     raise HTTPException(status_code=404, detail=str(e))
 

@@ -46,15 +46,14 @@ class RegistrationsService:
         ValueError if registration does not exist.
       """      
       # Attempt to get RegistrationEntity based on the IDs of the given user and event.
-      registration = self._session.query(RegistrationEntity).filter(
-        RegistrationEntity.user_id == registration.user_id, 
-        RegistrationEntity.event_id == registration.event_id).one()
-      # potentially put this in try catch in case one raises exception! (duplicate regs)
+      entity = self._session.query(RegistrationEntity).filter(
+        RegistrationEntity.user_id == registration.user_id,
+        RegistrationEntity.event_id == registration.event_id).one_or_none()
 
       # Check if the registration already exists in the table.
-      if registration:
+      if entity:
         # If the registration exists, raise a value error with a description.
-        raise ValueError(f"{registration.user_id.first_name} {registration.user_id.last_name} is already registered for the event '{registration.event_id.name}'.")
+        raise ValueError(f"This user is already registered for the event.")
       else:
         # If the registration does not exist, create a new registration.
         registration_entity = RegistrationEntity.from_model(registration)
@@ -110,17 +109,17 @@ class RegistrationsService:
       #   return [entity.to_model() for entity in entities]
       # else:
       #   raise ValueError(f"An event with the ID {event_id} does not exist.")
+      # ISSUE: for some reason, it is taking event_id and status, but querying for user_id = event_id instead of event_id = event_id.
       entities = self._session.query(RegistrationEntity).filter(
-        RegistrationEntity.event_id == event_id, RegistrationEntity.status == status)
+        RegistrationEntity.event_id == event_id).filter(RegistrationEntity.status == status).all()
       return [entity.to_model() for entity in entities]
       
-    def update_status(self, user_id: int, event_id: int) -> Registration:
+    def update_status(self, registration: Registration) -> Registration:
       """
       Update a Registration's status to attended (1).
 
       Args:
-        user_id is an Integer representing a unique identifier for a user.
-        event_id is an Integer representing a unique identifier for an event.
+        registration is a valid Registration model.
 
       Returns:
         list of Registrations
@@ -128,24 +127,23 @@ class RegistrationsService:
       Raises:
         ValueError there is no Registration for the specified User and Event.
       """
-      registration = self._session.query(RegistrationEntity).filter(
+      entity = self._session.query(RegistrationEntity).filter(
         RegistrationEntity.user_id == registration.user_id, 
-        RegistrationEntity.event_id == registration.event_id).one()
+        RegistrationEntity.event_id == registration.event_id).one_or_none()
       
-      if registration:
-        registration.status = 1
+      if entity:
+        entity.status = 1
         self._session.commit()
-        return registration.to_model()
+        return entity.to_model()
       else:
-        raise ValueError(f"The user with the ID {user_id} is not registered for the event with the ID {event_id}.")
+        raise ValueError(f"The user with the ID {registration.user_id} is not registered for the event with the ID {registration.event_id}.")
        
-    def delete_registration(self, user_id: int, event_id: int) -> None:
+    def delete_registration(self, registration: Registration) -> None:
       """
       Delete a User's registration for an Event.
 
       Args:
-        user_id is an Integer representing a unique identifier for a user.
-        event_id is an Integer representing a unique identifier for an event.
+        registration is a valid Registration model.
 
       Returns:
         None
@@ -153,15 +151,15 @@ class RegistrationsService:
       Raises:
         ValueError if there is no Registration for the specified User and Event.
       """
-      registration = self._session.query(RegistrationEntity).filter(
-        RegistrationEntity.user_id == user_id, 
-        RegistrationEntity.event_id == event_id).one()
+      entity = self._session.query(RegistrationEntity).filter(
+        RegistrationEntity.user_id == registration.user_id, 
+        RegistrationEntity.event_id == registration.event_id).one_or_none()
        
-      if registration:
-        self._session.delete(registration)
+      if entity:
+        self._session.delete(entity)
         self._session.commit()
       else:
-        raise ValueError(f"The user with the ID {user_id} is not registered for the event with the ID {event_id}.")
+        raise ValueError(f"The user with the ID {registration.user_id} is not registered for the event with the ID {registration.event_id}.")
       
     def clear_registrations(self, event_id: int):
       """
