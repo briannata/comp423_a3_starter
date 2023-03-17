@@ -111,7 +111,7 @@ class RegistrationsService:
       #   raise ValueError(f"An event with the ID {event_id} does not exist.")
       # ISSUE: for some reason, it is taking event_id and status, but querying for user_id = event_id instead of event_id = event_id.
       entities = self._session.query(RegistrationEntity).filter(
-        RegistrationEntity.event_id == event_id).filter(RegistrationEntity.status == status).all()
+        RegistrationEntity.event_id == event_id, RegistrationEntity.status == status).all()
       return [entity.to_model() for entity in entities]
       
     def update_status(self, registration: Registration) -> Registration:
@@ -179,6 +179,7 @@ class RegistrationsService:
       if len(registrations) > 0:
         for registration in registrations: # Determine better implementation using SQL.
           self._session.delete(registration)
+          self._session.commit()
       else:
         raise ValueError(f"There is no event with the ID {event_id}.")       
 

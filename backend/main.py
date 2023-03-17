@@ -46,7 +46,7 @@ def create_registration(registration: Registration, registrations_service: Regis
   except Exception as e:
     raise HTTPException(status_code=422, detail=str(e))
 
-@app.get("/api/registrations/{user_id}/{status}")
+@app.get("/api/registrations/user{user_id}/{status}")
 def get_registrations_by_user(user_id: int, status: int, registrations_service: RegistrationsService = Depends()) -> list[Registration]:
   """
   Get all Registration objects associated with a User based on attendance status.
@@ -67,7 +67,7 @@ def get_registrations_by_user(user_id: int, status: int, registrations_service: 
   except Exception as e:
     raise HTTPException(status_code=422, detail=str(e))
 
-@app.get("/api/registrations/{event_id}/{status}")
+@app.get("/api/registrations/event{event_id}/{status}")
 def get_registrations_by_event(event_id: int, status: int, registrations_service: RegistrationsService = Depends()) -> list[Registration]:
   """
   Get all registrations associated with an Event based on attendance status.
@@ -88,7 +88,7 @@ def get_registrations_by_event(event_id: int, status: int, registrations_service
   except Exception as e:
     raise HTTPException(status_code=422, detail=str(e))
 
-@app.put("/api/registrations/{user_id}/{event_id}")
+@app.put("/api/registrations")
 def mark_attended(registration: Registration, registrations_service: RegistrationsService = Depends()) -> Registration:
   """
   Update a User's attendance status for an Event.
@@ -108,7 +108,7 @@ def mark_attended(registration: Registration, registrations_service: Registratio
   except Exception as e:
     raise HTTPException(status_code=422, detail=str(e))
 
-@app.delete("/api/registrations/{user_id}/{event_id}")
+@app.delete("/api/registrations")
 def delete_registration(registration: Registration, registrations_service: RegistrationsService = Depends()) -> None:
   """
   Delete Registration for Event based on the User and the Event.
