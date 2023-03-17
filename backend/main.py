@@ -1,10 +1,74 @@
 from fastapi import FastAPI, Depends, HTTPException
+from user_service import UserService, User
 from role_service import RoleService, Role
 
 app = FastAPI()
 
 
 # TODO: Create API routes for User data (Audrey)
+
+@app.get("/api/users")
+def get_users(user_service: UserService = Depends()) -> list[User]:
+    """
+    Get all users
+
+    Returns:
+        list[User]: All `User`s in the `User` database table
+    """
+
+    # Return all roles
+    return user_service.all()
+
+@app.post("/api/users")
+def new_user(user: User, user_service: UserService = Depends()) -> User:
+    """
+    Create or update user
+
+    Returns:
+        User: Latest iteration of the created or updated user after changes made
+    """
+
+    # Try to create / update user
+    try:
+        # Return created / updated user
+        return user_service.create(user)
+    except Exception as e:
+        # Raise 422 exception if creation fails
+        # - This would occur if the request body is shaped incorrectly
+        raise HTTPException(status_code=422, detail=str(e))
+
+@app.get("/api/users/{pid}", responses={404: {"model": None}})
+def get_user(pid: int, user_service: UserService = Depends()) -> User:
+    """
+    Get user with matching pid
+
+    Returns:
+        User: User with matching pid
+    """
+    
+    # Try to get user with matching pid
+    try: 
+        # Return user
+        return user_service.get_from_userpid(pid)
+    except Exception as e:
+        # Raise 404 exception if search fails
+        # - This would occur if there is no response
+        raise HTTPException(status_code=404, detail=str(e))
+
+@app.delete("/api/users/{pid}")
+def delete_role(pid: int, user_service = Depends(UserService)):
+    """
+    Delete user based on pid
+    """
+
+    # Try to delete user
+    try:
+        # Return deleted role
+        return user_service.delete(pid)
+    except Exception as e:
+        # Raise 404 exception if search fails
+        # - This would occur if there is no response or if item to delete does not exist
+        raise HTTPException(status_code=404, detail=str(e))
 
 # TODO: Create API routes for Organization data (Brianna)
 

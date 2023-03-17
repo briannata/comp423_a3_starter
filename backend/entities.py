@@ -1,16 +1,67 @@
 """Definitions of SQLAlchemy table-backed object mappings called entities."""
 
 
-from sqlalchemy import Integer, String
+from sqlalchemy import Date, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from typing import Self
-from models import Role
+from models import User, Role
 
 
 class Base(DeclarativeBase):
     pass
 
 # TODO: Create an entity for User data (Audrey)
+class UserEntity(Base):
+    """Serves as the database model schema defining the shape of the `Role` table"""
+
+    __tablename__ = "users"
+
+    # Unique PID for each user
+    pid: Mapped[int] = mapped_column(Integer, primary_key=True)
+    # User's first name
+    first_name: Mapped[str] = mapped_column(String(64))
+    # User's last name
+    last_name: Mapped[str] = mapped_column(String(64))
+    # User's email
+    email: Mapped[str] = mapped_column(String(64))
+    # Type of membership (0 = user, 1 = manager)
+    user_type: Mapped[int] = mapped_column(Integer, primary_key=True)
+    # User's graduation month and year
+    graduation_date: Mapped[Date] = mapped_column(Date)
+    # User's first major
+    major1: Mapped[str] = mapped_column(String(64))
+    # User's second major
+    major2: Mapped[str] = mapped_column(String(64))
+    # User's first minor
+    minor1: Mapped[str] = mapped_column(String(64))
+    # User's second minor
+    minor2: Mapped[str] = mapped_column(String(64))
+
+    @classmethod
+    def from_model(cls, model: User) -> Self:
+        """
+        Class method that converts a `User` object into a `UserEntity`
+        
+        Parameters:
+            - model (User): Model to convert into an entity
+
+        Returns:
+            UserEntity: Entity created from model
+        """
+        return cls(pid=model.pid, first_name=model.first_name, last_name=model.last_name,
+        email=model.email, user_type=model.user_type, graduation_date=model.graduation_date,
+        major1=model.major1, major2=model.major2, minor1=model.minor1, minor2=model.minor2)
+
+    def to_model(self) -> User:
+        """
+        Converts a `UserEntity` object into a `User`
+        
+        Returns:
+            User: `User` object from the entity
+        """
+        return User(pid=self.pid, first_name=self.first_name, last_name=self.last_name,
+        email=self.email, user_type=self.user_type, graduation_date=self.graduation_date,
+        major1=self.major1, major2=self.major2, minor1=self.minor1, minor2=self.minor2)
 
 # TODO: Create an entity for Organization data (Brianna)
 
