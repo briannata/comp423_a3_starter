@@ -39,7 +39,7 @@ def new_organization(organization: Organization, organization_service: Organizat
         raise HTTPException(status_code=422, detail=str(e))
 
 @app.get("/api/organizations/{id}", responses={404: {"model": None}})
-def get_organization_from_id(id: int, organization_service: OrganizationService = Depends()) -> list[Organization]:
+def get_organization_from_id(id: int, organization_service: OrganizationService = Depends()) -> Organization:
     """
     Get organization with matching id
 
@@ -57,7 +57,7 @@ def get_organization_from_id(id: int, organization_service: OrganizationService 
         raise HTTPException(status_code=404, detail=str(e))
 
 @app.put("/api/organizations/", responses={404: {"model": None}})
-def update_organization(organization: Organization, organization_service: OrganizationService = Depends()) -> list[Organization]:
+def update_organization(organization: Organization, organization_service: OrganizationService = Depends()) -> Organization:
     """
     Update organization
 

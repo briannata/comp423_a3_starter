@@ -19,7 +19,7 @@ class OrganizationEntity(Base):
     __tablename__ = "organization"
 
     # Unique ID for the organization
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # Name of the organization
     name: Mapped[str] = mapped_column(String)
     # Logo of the organization
