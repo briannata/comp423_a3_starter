@@ -1,12 +1,12 @@
 """Definitions of SQLAlchemy table-backed object mappings called entities."""
 
 
-from sqlalchemy import Integer, String, DateTime
+from sqlalchemy import Integer, String, DateTime, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from typing import Self
 from models import Role, Organization, Event
 
-import datetime
+from datetime import datetime
 
 
 class Base(DeclarativeBase):
@@ -76,13 +76,13 @@ class EventEntity(Base):
     # Name of the event
     name: Mapped[str] = mapped_column(String)
     # Time of the event
-    time: Mapped[DateTime] = mapped_column(datetime)
+    time: Mapped[datetime] = mapped_column(DateTime)
     # Location of the event
     location: Mapped[str] = mapped_column(String)
     # Description of the event
     description: Mapped[str] = mapped_column(String)
     # Whether the event is public or not
-    public: Mapped[bool] = mapped_column(bool)
+    public: Mapped[bool] = mapped_column(Boolean)
     # ID of the organization hosting the event
     org_id: Mapped[int] = mapped_column(Integer)
 
