@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 # TODO: Create database models for User data (Audrey)
 
@@ -24,6 +25,22 @@ class Organization(BaseModel):
     heel_life: str
 
 # TODO: Create database models for Events data (Brianna)
+
+class Event(BaseModel):
+    """
+    Model to represent `Event` connections between users and organizations
+    
+    This model is based on the `EventEntity` model, which defines the shape
+    of the `Event` database in the PostgreSQL database
+    """
+    
+    id: int
+    name: str
+    time: datetime
+    location: str
+    description: str
+    public: bool
+    org_id: int
 
 # TODO: Create database models for Roles data (Ajay)
 

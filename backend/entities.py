@@ -1,10 +1,12 @@
 """Definitions of SQLAlchemy table-backed object mappings called entities."""
 
 
-from sqlalchemy import Integer, String
+from sqlalchemy import Integer, String, DateTime, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from typing import Self
-from models import Role, Organization
+from models import Role, Organization, Event
+
+from datetime import datetime
 
 
 class Base(DeclarativeBase):
@@ -64,6 +66,48 @@ class OrganizationEntity(Base):
         return Organization(id=self.id, name=self.name, logo=self.logo, short_description=self.short_description, long_description=self.long_description, website=self.website, email=self.email, instagram=self.instagram, linked_in=self.linked_in, youtube=self.youtube, heel_life=self.heel_life)
 
 # TODO: Create an entity for Events data (Brianna)
+class EventEntity(Base):
+    """Serves as the database model schema defining the shape of the `Event` table"""
+
+    __tablename__ = "event"
+
+    # Unique ID for the event
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    # Name of the event
+    name: Mapped[str] = mapped_column(String)
+    # Time of the event
+    time: Mapped[datetime] = mapped_column(DateTime)
+    # Location of the event
+    location: Mapped[str] = mapped_column(String)
+    # Description of the event
+    description: Mapped[str] = mapped_column(String)
+    # Whether the event is public or not
+    public: Mapped[bool] = mapped_column(Boolean)
+    # ID of the organization hosting the event
+    org_id: Mapped[int] = mapped_column(Integer)
+
+    @classmethod
+    def from_model(cls, model: Event) -> Self:
+        """
+        Class method that converts a `Event` object into a `EventEntity`
+        
+        Parameters:
+            - model (Event): Model to convert into an entity
+
+        Returns:
+            EventEntity: Entity created from model
+        """
+        return cls(id=model.id, name=model.name, time=model.time, location=model.location, description=model.description, public=model.public, org_id=model.org_id)
+
+    def to_model(self) -> Event:
+        """
+        Converts a `EventEntity` object into a `Event`
+        
+        Returns:
+            Event: `Event` object from the entity
+        """
+        return Event(id=self.id, name=self.name, time=self.time, location=self.location, description=self.description, public=self.public, org_id=self.org_id)
+
 
 # TODO: Create an entity for Roles data (Ajay)
 class RoleEntity(Base):
